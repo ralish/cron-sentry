@@ -126,7 +126,8 @@ def test_command_line_should_support_command_args_without_double_dashes(CommandR
         cmd=command[2:],
         dsn='http://testdsn',
         string_max_length=DEFAULT_STRING_MAX_LENGTH,
-        quiet=False
+        quiet=False,
+        extra={},
     )
 
 
@@ -141,7 +142,8 @@ def test_command_line_should_support_command_with_double_dashes(CommandReporterM
         cmd=command[3:],
         dsn='http://testdsn',
         string_max_length=DEFAULT_STRING_MAX_LENGTH,
-        quiet=False
+        quiet=False,
+        extra={},
     )
 
 
