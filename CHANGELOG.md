@@ -1,6 +1,10 @@
 current
 =======
 
+
+0.6.5
+=====
+
 * Send OSError message to Sentry (refs https://github.com/Yipit/cron-sentry/issues/3)
 
 
