@@ -14,6 +14,16 @@ def test_command_reporter_accepts_parameters(ClientMock):
 
 
 @mock.patch('cron_sentry.runner.Client')
+def test_command_reporter_catches_invalid_commands(ClientMock):
+    reporter = CommandReporter(['command-does-not-exists'], 'http://testdsn', DEFAULT_STRING_MAX_LENGTH)
+
+    reporter.run()
+
+    client = ClientMock()
+    assert client.captureMessage.called
+
+
+@mock.patch('cron_sentry.runner.Client')
 def test_command_reporter_works_with_no_params_commands(ClientMock):
     reporter = CommandReporter(['date'], 'http://testdsn', DEFAULT_STRING_MAX_LENGTH)
 

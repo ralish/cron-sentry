@@ -11,7 +11,7 @@ from time import time
 from .version import VERSION
 
 
-# 4096 is more than Sentry will accept by default. SENTRY_MAX_EXTRA_VARIABLE_SIZE in the Sentry configuration 
+# 4096 is more than Sentry will accept by default. SENTRY_MAX_EXTRA_VARIABLE_SIZE in the Sentry configuration
 # also needs to be increased to allow longer strings.
 DEFAULT_STRING_MAX_LENGTH = 4096
 
@@ -119,7 +119,10 @@ class CommandReporter(object):
 
         with TemporaryFile() as stdout:
             with TemporaryFile() as stderr:
-                exit_status = call(self.command, stdout=stdout, stderr=stderr)
+                try:
+                    exit_status = call(self.command, stdout=stdout, stderr=stderr)
+                except OSError:
+                    exit_status = 1
 
                 last_lines_stdout = self._get_last_lines(stdout)
                 last_lines_stderr = self._get_last_lines(stderr)
