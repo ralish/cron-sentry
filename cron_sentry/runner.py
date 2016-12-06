@@ -121,13 +121,15 @@ class CommandReporter(object):
             with TemporaryFile() as stderr:
                 try:
                     exit_status = call(self.command, stdout=stdout, stderr=stderr)
-                except OSError:
-                    exit_status = 1
+                except OSError as exc:
+                    last_lines_stdout = ''
+                    last_lines_stderr = unicode(exc)
+                    exit_status = 127  # http://www.tldp.org/LDP/abs/html/exitcodes.html
+                else:
+                    last_lines_stdout = self._get_last_lines(stdout)
+                    last_lines_stderr = self._get_last_lines(stderr)
 
-                last_lines_stdout = self._get_last_lines(stdout)
-                last_lines_stderr = self._get_last_lines(stderr)
-
-                if exit_status > 0:
+                if exit_status != 0:
                     elapsed = int((time() - start) * 1000)
                     self.report_fail(exit_status, last_lines_stdout, last_lines_stderr, elapsed)
 

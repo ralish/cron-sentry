@@ -1,5 +1,9 @@
+import errno
+import os
+
 import mock
 import sys
+
 from cron_sentry.runner import CommandReporter, DEFAULT_STRING_MAX_LENGTH, run, parser
 
 
@@ -13,14 +17,32 @@ def test_command_reporter_accepts_parameters(ClientMock):
     assert client.captureMessage.called
 
 
+@mock.patch('cron_sentry.runner.sys')
 @mock.patch('cron_sentry.runner.Client')
-def test_command_reporter_catches_invalid_commands(ClientMock):
-    reporter = CommandReporter(['command-does-not-exists'], 'http://testdsn', DEFAULT_STRING_MAX_LENGTH)
+def test_command_reporter_catches_invalid_commands(ClientMock, sys_mock):
+    command = ['command-does-not-exists']
+    reporter = CommandReporter(command, 'http://testdsn', DEFAULT_STRING_MAX_LENGTH)
 
-    reporter.run()
+    exit_code = reporter.run()
+
+    expected_exit_code = 127
+    expected_stdout = ''
+    expected_stderr = '[Errno {errno}] {msg}'.format(errno=errno.ENOENT, msg=os.strerror(errno.ENOENT))
 
     client = ClientMock()
-    assert client.captureMessage.called
+    client.captureMessage.assert_called_with(
+        mock.ANY,
+        time_spent=mock.ANY,
+        data=mock.ANY,
+        extra={
+            'command': command,
+            'exit_status': expected_exit_code,
+            "last_lines_stdout": expected_stdout,
+            "last_lines_stderr": expected_stderr,
+    })
+    assert exit_code == expected_exit_code
+    sys_mock.stdout.write.assert_called_with(expected_stdout)
+    sys_mock.stderr.write.assert_called_with(expected_stderr)
 
 
 @mock.patch('cron_sentry.runner.Client')
