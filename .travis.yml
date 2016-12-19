@@ -9,6 +9,9 @@ python:
   - "pypy"
   - "pypy3"
 
+env:
+  - PYTHONPATH=.
+
 install: make install_test_deps
 
 script: py.test -v tests/
