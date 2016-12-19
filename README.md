@@ -33,6 +33,13 @@ The Sentry server address can also be specified through the SENTRY_DSN
 environment variable (and the --dsn option can be omitted).
 ```
 
+It's possible to send extra information to Sentry via environment variables (prefix them with `CRON_SENTRY_EXTRA_`), such as:
+
+```
+$ export CRON_SENTRY_EXTRA_env=production
+$ cron-sentry my-program
+```
+
 Example
 -------
 
