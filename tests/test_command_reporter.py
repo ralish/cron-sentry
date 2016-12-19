@@ -236,3 +236,34 @@ sys.exit(2)
             "last_lines_stdout": expected_stdout,
             "last_lines_stderr": expected_stderr,
     })
+
+
+@mock.patch('cron_sentry.runner.sys')
+@mock.patch('cron_sentry.runner.Client')
+def test_extra_data_via_env_vars_should_go_to_sentry(ClientMock, sys_mock):
+    command = ['--dsn', 'http://testdsn', '/bin/true']
+
+    os.environ['CRON_SENTRY_EXTRA_secret1'] = 'hello'
+    os.environ['CRON_SENTRY_EXTRA_secret2'] = 'world'
+    try:
+        run(command)
+    finally:
+        del os.environ['CRON_SENTRY_EXTRA_secret1']
+        del os.environ['CRON_SENTRY_EXTRA_secret2']
+
+    expected_stdout = "a" * 100 + "end"
+    expected_stderr = "b" * 100 + "end"
+
+    client = ClientMock()
+    client.captureMessage.assert_called_with(
+        mock.ANY,
+        time_spent=mock.ANY,
+        data=mock.ANY,
+        extra={
+            'command': mock.ANY,
+            'exit_status': mock.ANY,
+            'last_lines_stdout': mock.ANY,
+            'last_lines_stderr': mock.ANY,
+            'secret1': 'hello',
+            'secret2': 'world',
+    })
