@@ -1,6 +1,7 @@
 current
 =======
 
+* Send extra data to Sentry. Any `CRON_SENTRY_EXTRA_` prefixed env var is sent to Sentry (https://github.com/Yipit/cron-sentry/pull/18)
 
 0.6.5
 =====
