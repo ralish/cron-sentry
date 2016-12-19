@@ -38,11 +38,13 @@ def test_command_reporter_catches_invalid_commands(ClientMock, sys_mock):
             'command': command,
             'exit_status': expected_exit_code,
             "last_lines_stdout": expected_stdout,
-            "last_lines_stderr": expected_stderr,
+            "last_lines_stderr": mock.ANY,
     })
     assert exit_code == expected_exit_code
     sys_mock.stdout.write.assert_called_with(expected_stdout)
-    sys_mock.stderr.write.assert_called_with(expected_stderr)
+    # python 3 exception `FileNotFoundError` has additional content compared to python 2's `OSError`
+    assert client.captureMessage.call_args[1]['extra']['last_lines_stderr'].startswith(expected_stderr)
+    assert sys_mock.stderr.write.call_args[0][0].startswith(expected_stderr)
 
 
 @mock.patch('cron_sentry.runner.Client')

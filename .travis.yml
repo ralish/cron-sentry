@@ -11,4 +11,4 @@ python:
 
 install: make install_test_deps
 
-script: make test
+script: py.test -v tests/

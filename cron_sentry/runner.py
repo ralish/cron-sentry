@@ -53,6 +53,13 @@ parser.add_argument(
     help='The command to run',
 )
 
+# subprocess.call() raises `OSError` in Python 2 but `FileNotFoundError` in Python 3.
+# The FileNotFoundError exception is defined only in Python 3 and the following is a shim.
+try:
+    CommandNotFoundError = FileNotFoundError
+except NameError:
+    CommandNotFoundError = OSError
+
 
 def update_dsn(opts):
     """Update the Sentry DSN stored in local configs
@@ -121,9 +128,9 @@ class CommandReporter(object):
             with TemporaryFile() as stderr:
                 try:
                     exit_status = call(self.command, stdout=stdout, stderr=stderr)
-                except OSError as exc:
+                except CommandNotFoundError as exc:
                     last_lines_stdout = ''
-                    last_lines_stderr = unicode(exc)
+                    last_lines_stderr = str(exc)
                     exit_status = 127  # http://www.tldp.org/LDP/abs/html/exitcodes.html
                 else:
                     last_lines_stdout = self._get_last_lines(stdout)
