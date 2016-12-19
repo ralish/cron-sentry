@@ -13,7 +13,7 @@ setup(
     author='Yipit Coders',
     author_email='coders@yipit.com',
     description='Cron-Sentry is a command-line wrapper that reports unsuccessful runs to Sentry (https://www.getsentry.com)',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     license='MIT',
     classifiers=[
         'Topic :: Utilities',
