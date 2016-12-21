@@ -241,7 +241,7 @@ sys.exit(2)
 @mock.patch('cron_sentry.runner.sys')
 @mock.patch('cron_sentry.runner.Client')
 def test_extra_data_via_env_vars_should_go_to_sentry(ClientMock, sys_mock):
-    command = ['--dsn', 'http://testdsn', '/bin/true']
+    command = ['--dsn', 'http://testdsn', 'false']
 
     os.environ['CRON_SENTRY_EXTRA_secret1'] = 'hello'
     os.environ['CRON_SENTRY_EXTRA_secret2'] = 'world'
