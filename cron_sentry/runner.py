@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from .version import VERSION
@@ -139,6 +140,7 @@ class CommandReporter(object):
 
     def run(self):
         start = time()
+        logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s")
 
         with TemporaryFile() as stdout:
             with TemporaryFile() as stderr:
