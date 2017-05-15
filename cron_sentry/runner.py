@@ -1,14 +1,15 @@
 import sys
+
+from .version import VERSION
+from argparse import ArgumentParser, REMAINDER
 from getpass import getuser
-from os import getenv, path, SEEK_END, environ
+from os import environ, getenv, path, SEEK_END
 from raven import Client
 from raven.transport import HTTPTransport
 from subprocess import call
-from tempfile import TemporaryFile
-from argparse import ArgumentParser, REMAINDER
 from sys import argv
+from tempfile import TemporaryFile
 from time import time
-from .version import VERSION
 
 
 # 4096 is more than Sentry will accept by default. SENTRY_MAX_EXTRA_VARIABLE_SIZE in the Sentry configuration
